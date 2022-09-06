@@ -28,3 +28,10 @@ server.get('/movies', (req, resp) => {
     movies: filteredList,
   });
 });
+
+// En esta carpeta ponemos los ficheros estáticos
+const staticServerPathWeb = './src/public-react'; 
+server.use(express.static(staticServerPathWeb));
+
+const staticServerPhotos = './src/public-movies-images'; 
+server.use(express.static(staticServerPhotos));
