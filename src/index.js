@@ -1,6 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const listMovies = require('./data/movies.json');
+const Database = require('better-sqlite3')
+
+//CONFIGURAR BASE DE DATOS
+const db = new Database('./src/db/database.db', {  verbose: console.log })
 
 // create and config server
 const server = express();
@@ -26,15 +30,19 @@ server.get('/movies', (req, resp) => {
     }
   });
 
-  console.log(filteredList, 'lista filtrada');
+  //console.log(filteredList, 'lista filtrada');
 
   const orderedList = filteredList.sort((a, b) => a.name.localeCompare(b.name));
 
-  console.log(orderedList, 'lista ordenada');
+  //console.log(orderedList, 'lista ordenada');
 
+  //SELECT PARA OBTENER PELICULAS
+  const query = db.prepare('SELECT * FROM movies')
+  const movies = query.all()
+  
   resp.json({
     success: true,
-    movies: orderedList,
+    movies: movies,
   });
 });
 
