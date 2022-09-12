@@ -1,10 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const listMovies = require('./data/movies.json');
-const Database = require('better-sqlite3')
+const Database = require('better-sqlite3');
 
 //CONFIGURAR BASE DE DATOS
-const db = new Database('./src/db/database.db', {  verbose: console.log })
+const db = new Database('./src/db/database.db', { verbose: console.log });
 
 // create and config server
 const server = express();
@@ -37,9 +37,9 @@ server.get('/movies', (req, resp) => {
   //console.log(orderedList, 'lista ordenada');
 
   //SELECT PARA OBTENER PELICULAS
-  const query = db.prepare('SELECT * FROM movies')
-  const movies = query.all()
-  
+  const query = db.prepare('SELECT * FROM movies');
+  const movies = query.all();
+
   resp.json({
     success: true,
     movies: movies,
@@ -62,6 +62,32 @@ server.get('/movie/:movieId', (req, res) => {
   console.log(foundMovie);
 
   res.render('movie', foundMovie);
+});
+
+// Endpoint login
+
+server.post('/login', (req, res) => {
+  console.log(req.body);
+  const email = req.body.email;
+
+  const query = db.prepare(`SELECT * FROM users WHERE email = ?`);
+  const emailUser = query.get(email);
+
+  console.log(emailUser.id);
+
+  const errorMessage = 'Error';
+
+  if (emailUser.id != null) {
+    res.json({ success: true, emailUserId: emailUser.id });
+  } else {
+    res.json({ success: false, errorMessage: errorMessage });
+  }
+});
+
+// Endpoint signup registro nuevos usuarios
+
+server.post('/signup', (req, res) => {
+  console.log(req.body);
 });
 
 // En esta carpeta ponemos los ficheros estáticos
